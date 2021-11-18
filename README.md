@@ -34,6 +34,6 @@ This is one of the solutions to an [issue](https://github.com/golang/go/issues/4
 
 The following packages are an implementation of fs2.
 
-- [osfs](https://pkg.go.dev/badge/github.com/jarxorg/fs2/osfs)
-- [memfs](https://pkg.go.dev/badge/github.com/jarxorg/fs2/memfs)
-- [s3fs](https://pkg.go.dev/badge/github.com/jarxorg/s3fs)
+- [osfs](https://pkg.go.dev/github.com/jarxorg/fs2/osfs)
+- [memfs](https://pkg.go.dev/github.com/jarxorg/fs2/memfs)
+- [s3fs](https://github.com/jarxorg/s3fs)
