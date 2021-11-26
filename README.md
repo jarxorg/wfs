@@ -1,9 +1,9 @@
-# fs2
+# wfs
 
-[![PkgGoDev](https://pkg.go.dev/badge/github.com/jarxorg/fs2)](https://pkg.go.dev/github.com/jarxorg/fs2)
-[![Report Card](https://goreportcard.com/badge/github.com/jarxorg/fs2)](https://goreportcard.com/report/github.com/jarxorg/fs2)
+[![PkgGoDev](https://pkg.go.dev/badge/github.com/jarxorg/wfs)](https://pkg.go.dev/github.com/jarxorg/wfs)
+[![Report Card](https://goreportcard.com/badge/github.com/jarxorg/wfs)](https://goreportcard.com/report/github.com/jarxorg/wfs)
 
-Package fs2 provides writable [io/fs](https://pkg.go.dev/io/fs).FS interfaces.
+Package wfs provides writable [io/fs](https://pkg.go.dev/io/fs).FS interfaces.
 
 ```go
 // WriterFile is a file that provides an implementation fs.File and io.Writer.
@@ -32,8 +32,8 @@ type RemoveFileFS interface {
 
 This is one of the solutions to an [issue](https://github.com/golang/go/issues/45757) of github.com/golango/go.
 
-The following packages are an implementation of fs2.
+The following packages are an implementation of wfs.
 
-- [osfs](https://pkg.go.dev/github.com/jarxorg/fs2/osfs)
-- [memfs](https://pkg.go.dev/github.com/jarxorg/fs2/memfs)
+- [osfs](https://pkg.go.dev/github.com/jarxorg/wfs/osfs)
+- [memfs](https://pkg.go.dev/github.com/jarxorg/wfs/memfs)
 - [s3fs](https://github.com/jarxorg/s3fs)

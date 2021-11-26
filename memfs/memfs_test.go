@@ -10,13 +10,13 @@ import (
 	"testing"
 	"testing/fstest"
 
-	"github.com/jarxorg/fs2"
-	"github.com/jarxorg/fs2/fstest2"
+	"github.com/jarxorg/wfs"
+	"github.com/jarxorg/wfs/wfstest"
 )
 
 func newMemFSTest(t *testing.T) *MemFS {
 	fsys := New()
-	err := fs2.CopyFS(fsys, os.DirFS("../osfs/testdata"), ".")
+	err := wfs.CopyFS(fsys, os.DirFS("../osfs/testdata"), ".")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -36,8 +36,8 @@ func TestWriteFileFS(t *testing.T) {
 	if err := fsys.mkdirAll(tmpdir, fs.ModePerm); err != nil {
 		t.Fatal(err)
 	}
-	if err := fstest2.TestWriteFileFS(fsys, tmpdir); err != nil {
-		t.Errorf(`Error fs2/fstest2: %+v`, err)
+	if err := wfstest.TestWriteFileFS(fsys, tmpdir); err != nil {
+		t.Errorf(`Error wfs/wfstest: %+v`, err)
 	}
 }
 

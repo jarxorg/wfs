@@ -7,8 +7,8 @@ import (
 	"log"
 	"os"
 
-	"github.com/jarxorg/fs2"
-	"github.com/jarxorg/fs2/osfs"
+	"github.com/jarxorg/wfs"
+	"github.com/jarxorg/wfs/osfs"
 )
 
 func ExampleDirFS() {
@@ -22,7 +22,7 @@ func ExampleDirFS() {
 	content := []byte(`Hello`)
 
 	fsys := osfs.DirFS(tmpDir)
-	_, err = fs2.WriteFile(fsys, name, content, fs.ModePerm)
+	_, err = wfs.WriteFile(fsys, name, content, fs.ModePerm)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -10,8 +10,8 @@ import (
 	"testing"
 	"testing/fstest"
 
-	"github.com/jarxorg/fs2"
-	"github.com/jarxorg/fs2/fstest2"
+	"github.com/jarxorg/wfs"
+	"github.com/jarxorg/wfs/wfstest"
 )
 
 func TestFS(t *testing.T) {
@@ -29,8 +29,8 @@ func TestWriteFileFS(t *testing.T) {
 	defer os.RemoveAll(tmpDir)
 
 	fsys := New(filepath.Dir(tmpDir))
-	if err := fstest2.TestWriteFileFS(fsys, filepath.Base(tmpDir)); err != nil {
-		t.Errorf(`Error fs2/fstest2: %+v`, err)
+	if err := wfstest.TestWriteFileFS(fsys, filepath.Base(tmpDir)); err != nil {
+		t.Errorf(`Error wfs/wfstest: %+v`, err)
 	}
 }
 
@@ -61,7 +61,7 @@ func TestCreateFile(t *testing.T) {
 	defer os.RemoveAll(tmpDir)
 
 	fsys := DirFS(tmpDir)
-	got, err := fs2.CreateFile(fsys, "test.txt", fs.ModePerm)
+	got, err := wfs.CreateFile(fsys, "test.txt", fs.ModePerm)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -85,7 +85,7 @@ func TestCreateFile_MkdirAllError(t *testing.T) {
 
 	fsys := DirFS(tmpDir)
 	var gotErr error
-	_, gotErr = fs2.CreateFile(fsys, "name.txt", fs.ModePerm)
+	_, gotErr = wfs.CreateFile(fsys, "name.txt", fs.ModePerm)
 
 	if !reflect.DeepEqual(gotErr, wantErr) {
 		t.Errorf("Error CreateFile returns unknown error %v; want %v", gotErr, wantErr)
@@ -103,7 +103,7 @@ func TestWriteFile(t *testing.T) {
 	want := []byte(`test`)
 
 	fsys := DirFS(tmpDir)
-	n, err := fs2.WriteFile(fsys, name, want, fs.ModePerm)
+	n, err := wfs.WriteFile(fsys, name, want, fs.ModePerm)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -128,7 +128,7 @@ func TestWriteFile_InvalidError(t *testing.T) {
 	defer os.RemoveAll(tmpDir)
 
 	fsys := DirFS(tmpDir)
-	_, err = fs2.WriteFile(fsys, "../invalid.txt", []byte{}, fs.ModePerm)
+	_, err = wfs.WriteFile(fsys, "../invalid.txt", []byte{}, fs.ModePerm)
 	if err == nil {
 		t.Fatal("Error WriteFile returns no error")
 	}
@@ -180,7 +180,7 @@ func TestSub_WriteFile(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	n, err := fs2.WriteFile(fsys, name, want, fs.ModePerm)
+	n, err := wfs.WriteFile(fsys, name, want, fs.ModePerm)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -211,7 +211,7 @@ func TestRemoveFile(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	err = fs2.RemoveFile(fsys, name)
+	err = wfs.RemoveFile(fsys, name)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -225,7 +225,7 @@ func TestRemoveFile_InvalidError(t *testing.T) {
 	defer os.RemoveAll(tmpDir)
 
 	fsys := DirFS(tmpDir)
-	err = fs2.RemoveFile(fsys, "../invalid-dir")
+	err = wfs.RemoveFile(fsys, "../invalid-dir")
 	if err == nil {
 		t.Fatal("Error RemoveFile returns no error")
 	}
@@ -249,7 +249,7 @@ func TestRemoveAll(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	err = fs2.RemoveAll(fsys, path)
+	err = wfs.RemoveAll(fsys, path)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -263,7 +263,7 @@ func TestRemoveAll_InvalidError(t *testing.T) {
 	defer os.RemoveAll(tmpDir)
 
 	fsys := DirFS(tmpDir)
-	err = fs2.RemoveAll(fsys, "../invalid-dir")
+	err = wfs.RemoveAll(fsys, "../invalid-dir")
 	if err == nil {
 		t.Fatal("Error RemoveAll returns no error")
 	}

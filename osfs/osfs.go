@@ -8,11 +8,11 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/jarxorg/fs2"
+	"github.com/jarxorg/wfs"
 )
 
 // DirFS returns a filesystem for the tree of files rooted at the directory dir.
-// The filesystem can write using fs2.WriteFile(fsys fs.FS, name string, p []byte).
+// The filesystem can write using wfs.WriteFile(fsys fs.FS, name string, p []byte).
 func DirFS(dir string) fs.FS {
 	return New(dir)
 }
@@ -46,7 +46,7 @@ var osRemoveAllFunc = func(path string) error {
 // OSFS represents a filesystem for the OS.
 type OSFS struct {
 	Dir  string
-	osFS *fs2.FSDelegator
+	osFS *wfs.FSDelegator
 }
 
 var (
@@ -56,8 +56,8 @@ var (
 	_ fs.ReadFileFS    = (*OSFS)(nil)
 	_ fs.StatFS        = (*OSFS)(nil)
 	_ fs.SubFS         = (*OSFS)(nil)
-	_ fs2.WriteFileFS  = (*OSFS)(nil)
-	_ fs2.RemoveFileFS = (*OSFS)(nil)
+	_ wfs.WriteFileFS  = (*OSFS)(nil)
+	_ wfs.RemoveFileFS = (*OSFS)(nil)
 )
 
 // NewOSFS returns a filesystem for the tree of files rooted at the directory dir.
@@ -70,7 +70,7 @@ func NewOSFS(dir string) *OSFS {
 func New(dir string) *OSFS {
 	return &OSFS{
 		Dir:  dir,
-		osFS: fs2.DelegateFS(os.DirFS(dir)),
+		osFS: wfs.DelegateFS(os.DirFS(dir)),
 	}
 }
 
@@ -116,7 +116,7 @@ func (fsys *OSFS) MkdirAll(dir string, mode fs.FileMode) error {
 }
 
 // CreateFile creates the named file.
-func (fsys *OSFS) CreateFile(name string, mode fs.FileMode) (fs2.WriterFile, error) {
+func (fsys *OSFS) CreateFile(name string, mode fs.FileMode) (wfs.WriterFile, error) {
 	if isInvalidPath(name) {
 		return nil, &fs.PathError{Op: "Create", Path: name, Err: fs.ErrInvalid}
 	}

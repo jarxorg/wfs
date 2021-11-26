@@ -1,4 +1,4 @@
-package fs2
+package wfs
 
 import (
 	"errors"
