@@ -1,3 +1,3 @@
-module github.com/jarxorg/fs2
+module github.com/jarxorg/wfs
 
 go 1.16

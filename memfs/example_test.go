@@ -5,8 +5,8 @@ import (
 	"io/fs"
 	"log"
 
-	"github.com/jarxorg/fs2"
-	"github.com/jarxorg/fs2/memfs"
+	"github.com/jarxorg/wfs"
+	"github.com/jarxorg/wfs/memfs"
 )
 
 func ExampleNew() {
@@ -15,7 +15,7 @@ func ExampleNew() {
 
 	fsys := memfs.New()
 	var err error
-	_, err = fs2.WriteFile(fsys, name, content, fs.ModePerm)
+	_, err = wfs.WriteFile(fsys, name, content, fs.ModePerm)
 	if err != nil {
 		log.Fatal(err)
 	}

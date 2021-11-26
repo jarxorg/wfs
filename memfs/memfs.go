@@ -10,7 +10,7 @@ import (
 	"sync"
 	"syscall"
 
-	"github.com/jarxorg/fs2"
+	"github.com/jarxorg/wfs"
 )
 
 // MemFS represents an in-memory filesystem.
@@ -28,8 +28,8 @@ var (
 	_ fs.ReadFileFS    = (*MemFS)(nil)
 	_ fs.StatFS        = (*MemFS)(nil)
 	_ fs.SubFS         = (*MemFS)(nil)
-	_ fs2.WriteFileFS  = (*MemFS)(nil)
-	_ fs2.RemoveFileFS = (*MemFS)(nil)
+	_ wfs.WriteFileFS  = (*MemFS)(nil)
+	_ wfs.RemoveFileFS = (*MemFS)(nil)
 )
 
 // New returns a new MemFS.
@@ -216,7 +216,7 @@ func (fsys *MemFS) MkdirAll(dir string, mode fs.FileMode) error {
 }
 
 // CreateFile creates the named file.
-func (fsys *MemFS) CreateFile(name string, mode fs.FileMode) (fs2.WriterFile, error) {
+func (fsys *MemFS) CreateFile(name string, mode fs.FileMode) (wfs.WriterFile, error) {
 	fsys.mutex.Lock()
 	defer fsys.mutex.Unlock()
 
@@ -271,7 +271,7 @@ func (fsys *MemFS) RemoveAll(path string) error {
 }
 
 // MemFile represents an in-memory file.
-// MemFile implements fs.File, fs.ReadDirFile and fs2.WriterFile.
+// MemFile implements fs.File, fs.ReadDirFile and wfs.WriterFile.
 type MemFile struct {
 	fsys       *MemFS
 	name       string
@@ -286,7 +286,7 @@ type MemFile struct {
 var (
 	_ fs.File        = (*MemFile)(nil)
 	_ fs.ReadDirFile = (*MemFile)(nil)
-	_ fs2.WriterFile = (*MemFile)(nil)
+	_ wfs.WriterFile = (*MemFile)(nil)
 )
 
 // Read reads bytes from this file.

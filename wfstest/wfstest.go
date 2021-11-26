@@ -1,5 +1,5 @@
-// Package fstest2 implements support for testing implementations and users of file systems.
-package fstest2
+// Package wfstest implements support for testing implementations and users of file systems.
+package wfstest
 
 import (
 	"fmt"
@@ -7,10 +7,10 @@ import (
 	"strings"
 	"testing/iotest"
 
-	"github.com/jarxorg/fs2"
+	"github.com/jarxorg/wfs"
 )
 
-// TestWriteFileFS tests a fs2.WriteFileFS implementation.
+// TestWriteFileFS tests a wfs.WriteFileFS implementation.
 //
 // Typical usage inside a test is:
 //
@@ -21,7 +21,7 @@ import (
 //  defer os.RemoveAll(tmpDir)
 //
 //  fsys := osfs.New(filepath.Dir(tmpDir))
-//  if err := fstest2.TestWriteFileFS(fsys, filepath.Base(tmpDir)); err != nil {
+//  if err := wfstest.TestWriteFileFS(fsys, filepath.Base(tmpDir)); err != nil {
 //    t.Fatal(err)
 //  }
 func TestWriteFileFS(fsys fs.FS, tmpDir string) error {
@@ -49,7 +49,7 @@ func TestWriteFileFS(fsys fs.FS, tmpDir string) error {
 	for _, test := range tests {
 		name := tmpDir + "/" + test.name
 
-		f, err := fs2.CreateFile(fsys, name, fs.ModePerm)
+		f, err := wfs.CreateFile(fsys, name, fs.ModePerm)
 		if test.wantErr {
 			if err == nil {
 				f.Close()
@@ -65,16 +65,16 @@ func TestWriteFileFS(fsys fs.FS, tmpDir string) error {
 			return err
 		}
 	}
-	if err := fs2.RemoveFile(fsys, tmpDir+"/file.txt"); err != nil {
+	if err := wfs.RemoveFile(fsys, tmpDir+"/file.txt"); err != nil {
 		return fmt.Errorf("%s: RemoveFile: %v", "file.txt", err)
 	}
-	if err := fs2.RemoveAll(fsys, tmpDir+"/dir"); err != nil {
+	if err := wfs.RemoveAll(fsys, tmpDir+"/dir"); err != nil {
 		return fmt.Errorf("%s: RemoveAll: %v", "dir", err)
 	}
 	return nil
 }
 
-func checkFileWrite(fsys fs.FS, f fs2.WriterFile, name string) error {
+func checkFileWrite(fsys fs.FS, f wfs.WriterFile, name string) error {
 	ps := [][]byte{[]byte("hello"), []byte(",world")}
 	data := append(ps[0], ps[1]...)
 
