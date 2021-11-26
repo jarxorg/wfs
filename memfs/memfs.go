@@ -5,7 +5,7 @@ import (
 	"bytes"
 	"io"
 	"io/fs"
-	"path/filepath"
+	"path"
 	"strings"
 	"sync"
 	"syscall"
@@ -41,7 +41,11 @@ func New() *MemFS {
 }
 
 func (fsys *MemFS) key(name string) string {
-	return filepath.Clean(filepath.Join(fsys.dir, name))
+	return path.Clean(path.Join(fsys.dir, name))
+}
+
+func (fsys *MemFS) rel(name string) string {
+	return strings.TrimPrefix(name, fsys.dir)
 }
 
 func (fsys *MemFS) open(name string) (*value, error) {
@@ -61,7 +65,7 @@ func (fsys *MemFS) mkdirAll(dir string, mode fs.FileMode) error {
 	}
 	keys := strings.Split(fsys.key(dir), "/")
 	for i, k := range keys {
-		key := fsys.key(filepath.Join(keys[0 : i+1]...))
+		key := fsys.key(path.Join(keys[0 : i+1]...))
 		if v := fsys.store.get(key); v != nil {
 			if !v.isDir {
 				return &fs.PathError{Op: "MkdirAll", Path: dir, Err: fs.ErrInvalid}
@@ -81,7 +85,7 @@ func (fsys *MemFS) create(name string, mode fs.FileMode) (*value, error) {
 	if !fs.ValidPath(name) {
 		return nil, &fs.PathError{Op: "Create", Path: name, Err: fs.ErrInvalid}
 	}
-	err := fsys.mkdirAll(filepath.Dir(name), mode)
+	err := fsys.mkdirAll(path.Dir(name), mode)
 	if err != nil {
 		return nil, err
 	}
@@ -117,10 +121,6 @@ func (fsys *MemFS) Open(name string) (fs.File, error) {
 	return f, nil
 }
 
-var filepathRel = func(basepath, targpath string) (string, error) {
-	return filepath.Rel(basepath, targpath)
-}
-
 // Glob returns the names of all files matching pattern, providing an implementation
 // of the top-level Glob function.
 func (fsys *MemFS) Glob(pattern string) ([]string, error) {
@@ -134,11 +134,7 @@ func (fsys *MemFS) Glob(pattern string) ([]string, error) {
 
 	var names []string
 	for _, key := range keys {
-		name, err := filepathRel(fsys.dir, key)
-		if err != nil {
-			return nil, err
-		}
-		names = append(names, name)
+		names = append(names, fsys.rel(key))
 	}
 	return names, nil
 }
@@ -206,7 +202,7 @@ func (fsys *MemFS) Sub(dir string) (fs.FS, error) {
 		return nil, &fs.PathError{Op: "Sub", Path: dir, Err: fs.ErrInvalid}
 	}
 	return &MemFS{
-		dir:   filepath.Join(fsys.dir, dir),
+		dir:   path.Join(fsys.dir, dir),
 		store: fsys.store,
 	}, nil
 }
@@ -224,14 +220,13 @@ func (fsys *MemFS) CreateFile(name string, mode fs.FileMode) (fs2.WriterFile, er
 	fsys.mutex.Lock()
 	defer fsys.mutex.Unlock()
 
-	v, err := fsys.create(name, mode)
-	if err != nil {
+	if _, err := fsys.create(name, mode); err != nil {
 		return nil, err
 	}
 	return &MemFile{
 		fsys: fsys,
 		name: name,
-		buf:  bytes.NewBuffer(v.data),
+		buf:  new(bytes.Buffer),
 		mode: mode,
 	}, nil
 }

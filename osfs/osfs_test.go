@@ -5,19 +5,32 @@ import (
 	"io/fs"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 	"reflect"
 	"testing"
 	"testing/fstest"
 
 	"github.com/jarxorg/fs2"
+	"github.com/jarxorg/fs2/fstest2"
 )
 
 func TestFS(t *testing.T) {
-	if err := fstest.TestFS(DirFS("testdata"), "dir0"); err != nil {
+	fsys := New("testdata")
+	if err := fstest.TestFS(fsys, "dir0", "dir0/file01.txt"); err != nil {
 		t.Errorf("Error testing/fstest: %+v", err)
 	}
-	if err := fstest.TestFS(DirFS("testdata"), "dir0/file01.txt"); err != nil {
-		t.Errorf("Error testing/fstest: %+v", err)
+}
+
+func TestWriteFileFS(t *testing.T) {
+	tmpDir, err := ioutil.TempDir("", "test")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.RemoveAll(tmpDir)
+
+	fsys := New(filepath.Dir(tmpDir))
+	if err := fstest2.TestWriteFileFS(fsys, filepath.Base(tmpDir)); err != nil {
+		t.Errorf(`Error fs2/fstest2: %+v`, err)
 	}
 }
 

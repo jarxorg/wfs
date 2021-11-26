@@ -11,6 +11,7 @@ import (
 	"testing/fstest"
 
 	"github.com/jarxorg/fs2"
+	"github.com/jarxorg/fs2/fstest2"
 )
 
 func newMemFSTest(t *testing.T) *MemFS {
@@ -24,12 +25,19 @@ func newMemFSTest(t *testing.T) *MemFS {
 
 func TestFS(t *testing.T) {
 	fsys := newMemFSTest(t)
-
-	if err := fstest.TestFS(fsys, "dir0"); err != nil {
+	if err := fstest.TestFS(fsys, "dir0", "dir0/file01.txt"); err != nil {
 		t.Errorf(`Error testing/fstest: %+v`, err)
 	}
-	if err := fstest.TestFS(fsys, "dir0/file01.txt"); err != nil {
-		t.Errorf(`Error testing/fstest: %+v`, err)
+}
+
+func TestWriteFileFS(t *testing.T) {
+	fsys := New()
+	tmpdir := "tmpdir"
+	if err := fsys.mkdirAll(tmpdir, fs.ModePerm); err != nil {
+		t.Fatal(err)
+	}
+	if err := fstest2.TestWriteFileFS(fsys, tmpdir); err != nil {
+		t.Errorf(`Error fs2/fstest2: %+v`, err)
 	}
 }
 
@@ -160,23 +168,6 @@ func TestGlob(t *testing.T) {
 		if !reflect.DeepEqual(got, tc.want) {
 			t.Errorf(`Error Glob("%s") got %v; want %v`, tc.pattern, got, tc.want)
 		}
-	}
-}
-
-func TestGlob_filepathRelError(t *testing.T) {
-	orgFilepathRel := filepathRel
-	defer func() { filepathRel = orgFilepathRel }()
-
-	wantErr := errors.New("test")
-	filepathRel = func(basepath, targpath string) (string, error) {
-		return "", wantErr
-	}
-
-	fsys := newMemFSTest(t)
-	var gotErr error
-	_, gotErr = fsys.Glob("*")
-	if gotErr != wantErr {
-		t.Errorf(`Error Glob error got %v; want %v`, gotErr, wantErr)
 	}
 }
 

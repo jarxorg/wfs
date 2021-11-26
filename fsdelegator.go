@@ -350,6 +350,7 @@ func (d *FileInfoDelegator) ModTime() time.Time {
 	return d.Values.ModTime
 }
 
+// IsDir returns d.Values.IsDir.
 func (d *FileInfoDelegator) IsDir() bool {
 	return d.Values.IsDir
 }
