@@ -37,3 +37,4 @@ The following packages are an implementation of wfs.
 - [osfs](https://pkg.go.dev/github.com/jarxorg/wfs/osfs)
 - [memfs](https://pkg.go.dev/github.com/jarxorg/wfs/memfs)
 - [s3fs](https://github.com/jarxorg/s3fs)
+- [gcsfs](https://github.com/jarxorg/gcsfs)
