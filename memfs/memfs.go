@@ -174,7 +174,9 @@ func (fsys *MemFS) ReadFile(name string) ([]byte, error) {
 	if v.isDir {
 		return nil, &fs.PathError{Op: "ReadFile", Path: name, Err: fs.ErrInvalid}
 	}
-	return v.data, nil
+	dest := make([]byte, len(v.data))
+	copy(dest, v.data)
+	return dest, nil
 }
 
 // Stat returns a FileInfo describing the file. If there is an error, it should be
@@ -240,8 +242,8 @@ func (fsys *MemFS) WriteFile(name string, p []byte, mode fs.FileMode) (int, erro
 	if err != nil {
 		return 0, err
 	}
-	v.data = p[:]
-	return len(p), nil
+	v.data = make([]byte, len(p))
+	return copy(v.data, p), nil
 }
 
 // RemoveFile removes the specified named file.

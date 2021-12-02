@@ -399,7 +399,7 @@ func TestRemoveAll(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	got := fsys.store.keys[:]
+	got := fsys.store.keys
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf(`Error RemoveAll("%s") after keys %v; want %v`, dir, got, want)
 	}
