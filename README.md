@@ -38,3 +38,30 @@ The following packages are an implementation of wfs.
 - [memfs](https://pkg.go.dev/github.com/jarxorg/wfs/memfs)
 - [s3fs](https://github.com/jarxorg/s3fs)
 - [gcsfs](https://github.com/jarxorg/gcsfs)
+
+## CopyFS
+
+CopyFS walks the specified root directory on src and copies directories and files to dest filesystem.
+The following code is an example.
+
+```go
+package main
+
+import (
+	"log"
+
+	"github.com/jarxorg/s3fs"
+	"github.com/jarxorg/wfs"
+	"github.com/jarxorg/wfs/osfs"
+)
+
+func main() {
+	src := s3fs.New("your-bucket")
+	dst := osfs.DirFS("local-dir")
+
+	// NOTE: Copy files on s3://your-bucket to local-dir.
+	if err := wfs.CopyFS(dst, src, "."); err != nil {
+		log.Fatal(err)
+	}
+}
+```
