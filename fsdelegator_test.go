@@ -12,7 +12,7 @@ import (
 func TestOpenFSDelegator_TestFS(t *testing.T) {
 	d := DelegateOpenFS(os.DirFS("osfs/testdata"))
 	if err := fstest.TestFS(d, "dir0/file01.txt"); err != nil {
-		t.Errorf(`Error testing/fstest: %+v`, err)
+		t.Fatal(err)
 	}
 }
 
@@ -21,51 +21,51 @@ func TestOpenFSDelegator_ErrNotImplemented(t *testing.T) {
 	var err error
 	_, err = d.Open("")
 	if !errors.Is(err, ErrNotImplemented) {
-		t.Errorf(`Error unknown: %v`, err)
+		t.Errorf("unexpected %v; want %v", err, ErrNotImplemented)
 	}
 }
 
 func TestFSDelegator_TestFS(t *testing.T) {
 	d := DelegateFS(os.DirFS("osfs/testdata"))
 	if err := fstest.TestFS(d, "dir0/file01.txt"); err != nil {
-		t.Errorf(`Error testing/fstest: %+v`, err)
+		t.Fatal(err)
 	}
 }
 
 func testFSDelegatorErrors(t *testing.T, d *FSDelegator, wantErr error) {
 	var err error
 	if _, err = d.Open(""); !errors.Is(err, wantErr) {
-		t.Errorf(`Error unknown: %v`, err)
+		t.Errorf("unexpected %v", err)
 	}
 	if _, err = d.ReadDir(""); !errors.Is(err, wantErr) {
-		t.Errorf(`Error unknown: %v`, err)
+		t.Errorf("unexpected %v", err)
 	}
 	if _, err = d.ReadFile(""); !errors.Is(err, wantErr) {
-		t.Errorf(`Error unknown: %v`, err)
+		t.Errorf("unexpected %v", err)
 	}
 	if _, err = d.Glob(""); !errors.Is(err, wantErr) {
-		t.Errorf(`Error unknown: %v`, err)
+		t.Errorf("unexpected %v", err)
 	}
 	if _, err = d.Stat(""); !errors.Is(err, wantErr) {
-		t.Errorf(`Error unknown: %v`, err)
+		t.Errorf("unexpected %v", err)
 	}
 	if _, err = d.Sub(""); !errors.Is(err, wantErr) {
-		t.Errorf(`Error unknown: %v`, err)
+		t.Errorf("unexpected %v", err)
 	}
 	if err = d.MkdirAll("", fs.ModePerm); err != nil {
-		t.Errorf(`Error unknown: %v`, err)
+		t.Errorf("unexpected %v", err)
 	}
 	if _, err = d.CreateFile("", fs.ModePerm); !errors.Is(err, wantErr) {
-		t.Errorf(`Error unknown: %v`, err)
+		t.Errorf("unexpected %v", err)
 	}
 	if _, err = d.WriteFile("", []byte{}, fs.ModePerm); !errors.Is(err, wantErr) {
-		t.Errorf(`Error unknown: %v`, err)
+		t.Errorf("unexpected %v", err)
 	}
 	if err = d.RemoveFile(""); !errors.Is(err, wantErr) {
-		t.Errorf(`Error unknown: %v`, err)
+		t.Errorf("unexpected %v", err)
 	}
 	if err = d.RemoveAll(""); !errors.Is(err, wantErr) {
-		t.Errorf(`Error unknown: %v`, err)
+		t.Errorf("unexpected %v", err)
 	}
 }
 
@@ -130,7 +130,7 @@ func TestDelegateFS_ReadDir(t *testing.T) {
 		t.Fatal(err)
 	}
 	if !reflect.DeepEqual(got, want) {
-		t.Errorf(`Error ReadDir returns %v; want %v`, got, want)
+		t.Errorf("unexpected %v; want %v", got, want)
 	}
 }
 
@@ -147,7 +147,7 @@ func TestDelegateFS_ReadFile(t *testing.T) {
 		t.Fatal(err)
 	}
 	if !reflect.DeepEqual(got, want) {
-		t.Errorf(`Error ReadFile returns %v; want %v`, got, want)
+		t.Errorf("unexpected %v; want %v", got, want)
 	}
 }
 
@@ -164,7 +164,7 @@ func TestDelegateFS_Glob(t *testing.T) {
 		t.Fatal(err)
 	}
 	if !reflect.DeepEqual(got, want) {
-		t.Errorf(`Error ReadFile returns %v; want %v`, got, want)
+		t.Errorf("unexpected %v; want %v", got, want)
 	}
 }
 
@@ -181,7 +181,7 @@ func TestDelegateFS_Stat(t *testing.T) {
 		t.Fatal(err)
 	}
 	if !reflect.DeepEqual(got, want) {
-		t.Errorf(`Error Stat returns %v; want %v`, got, want)
+		t.Errorf("unexpected %v; want %v", got, want)
 	}
 }
 
@@ -198,7 +198,7 @@ func TestDelegateFS_Sub(t *testing.T) {
 		t.Fatal(err)
 	}
 	if !reflect.DeepEqual(got, want) {
-		t.Errorf(`Error Sub returns %v; want %v`, got, want)
+		t.Errorf("unexpected %v; want %v", got, want)
 	}
 }
 
@@ -209,19 +209,19 @@ func TestDelegateFile(t *testing.T) {
 func testFileDelegatorErrors(t *testing.T, d *FileDelegator, wantErr error) {
 	var err error
 	if _, err = d.Stat(); !errors.Is(err, wantErr) {
-		t.Errorf(`Error unknown: %v`, err)
+		t.Errorf("unexpected %v", err)
 	}
 	if _, err = d.Read([]byte{}); !errors.Is(err, wantErr) {
-		t.Errorf(`Error unknown: %v`, err)
+		t.Errorf("unexpected %v", err)
 	}
 	if err = d.Close(); err != nil {
-		t.Errorf(`Error unknown: %v`, err)
+		t.Errorf("unexpected %v", err)
 	}
 	if _, err = d.ReadDir(-1); !errors.Is(err, wantErr) {
-		t.Errorf(`Error unknown: %v`, err)
+		t.Errorf("unexpected %v", err)
 	}
 	if _, err = d.Write([]byte{}); !errors.Is(err, wantErr) {
-		t.Errorf(`Error unknown: %v`, err)
+		t.Errorf("unexpected %v", err)
 	}
 }
 
@@ -258,19 +258,19 @@ func TestDirEntryDelegator(t *testing.T) {
 		t.Fatal(err)
 	}
 	if len(ds) == 0 {
-		t.Fatal(`Fatal ReadDir returns empty.`)
+		t.Fatal("unexpected empty dir entries")
 	}
 
 	want := ds[0]
 	got := DelegateDirEntry(want)
 	if got.Name() != want.Name() {
-		t.Errorf(`Error Name got %s; want %s`, got.Name(), want.Name())
+		t.Errorf("unexpected %s; want %s", got.Name(), want.Name())
 	}
 	if got.IsDir() != want.IsDir() {
-		t.Errorf(`Error IsDir got %v; want %v`, got.IsDir(), want.IsDir())
+		t.Errorf("unexpected %v; want %v", got.IsDir(), want.IsDir())
 	}
 	if got.Type() != want.Type() {
-		t.Errorf(`Error Type got %v; want %v`, got.Type(), want.Type())
+		t.Errorf("unexpected %v; want %v", got.Type(), want.Type())
 	}
 
 	wantInfo, err := want.Info()
@@ -282,7 +282,7 @@ func TestDirEntryDelegator(t *testing.T) {
 		t.Fatal(err)
 	}
 	if !reflect.DeepEqual(gotInfo, wantInfo) {
-		t.Errorf(`Error Info returns %v; want %v`, gotInfo, wantInfo)
+		t.Errorf("unexpected %v; want %v", gotInfo, wantInfo)
 	}
 
 	got.InfoFunc = nil
@@ -291,7 +291,7 @@ func TestDirEntryDelegator(t *testing.T) {
 		t.Fatal(err)
 	}
 	if gotInfo != nil {
-		t.Errorf(`Error info returns %v; want nil`, gotInfo)
+		t.Errorf("unexpected %v; want nil", gotInfo)
 	}
 }
 
@@ -304,21 +304,21 @@ func TestInfoInfoDelegator(t *testing.T) {
 
 	got := DelegateFileInfo(want)
 	if got.Name() != want.Name() {
-		t.Errorf(`Error Name got %s; want %s`, got.Name(), want.Name())
+		t.Errorf("unexpected %s; want %s", got.Name(), want.Name())
 	}
 	if got.Size() != want.Size() {
-		t.Errorf(`Error Size got %d; want %d`, got.Size(), want.Size())
+		t.Errorf("unexpected %d; want %d", got.Size(), want.Size())
 	}
 	if got.Mode() != want.Mode() {
-		t.Errorf(`Error Mode got %v; want %v`, got.Mode(), want.Mode())
+		t.Errorf("unexpected %v; want %v", got.Mode(), want.Mode())
 	}
 	if got.ModTime() != want.ModTime() {
-		t.Errorf(`Error ModTime got %v; want %v`, got.ModTime(), want.ModTime())
+		t.Errorf("unexpected %v; want %v", got.ModTime(), want.ModTime())
 	}
 	if got.IsDir() != want.IsDir() {
-		t.Errorf(`Error IsDir got %v; want %v`, got.IsDir(), want.IsDir())
+		t.Errorf("unexpected %v; want %v", got.IsDir(), want.IsDir())
 	}
 	if got.Sys() != want.Sys() {
-		t.Errorf(`Error Sys got %v; want %v`, got.Sys(), want.Sys())
+		t.Errorf("unexpected %v; want %v", got.Sys(), want.Sys())
 	}
 }
