@@ -24,7 +24,7 @@ func TestMkdirAll(t *testing.T) {
 		t.Fatal(err)
 	}
 	if got != want {
-		t.Errorf("Error MkdirAll called with %s; want %s", got, want)
+		t.Errorf("unexpected %s; want %s", got, want)
 	}
 }
 
@@ -36,14 +36,14 @@ func TestMkdirAll_ErrNotImplemented(t *testing.T) {
 
 	err := MkdirAll(fsys, dir, fs.ModePerm)
 	if err == nil {
-		t.Errorf("Error MkdirAll returns no error")
+		t.Fatal("no error")
 	}
 	gotErr, ok := err.(*fs.PathError)
 	if !ok {
-		t.Errorf("Error MkdirAll returns unknown error %v", err)
+		t.Errorf("unexpected %v", err)
 	}
-	if !reflect.DeepEqual(gotErr, wantErr) {
-		t.Errorf("Error MkdirAll returns unknown error %v; want %v", gotErr, wantErr)
+	if gotErr.Error() != wantErr.Error() {
+		t.Errorf("unexpected %v; want %v", gotErr, wantErr)
 	}
 }
 
@@ -62,10 +62,10 @@ func TestCreateFile(t *testing.T) {
 		t.Fatal(err)
 	}
 	if !called {
-		t.Error("Error CreateFile is not called")
+		t.Error("not called CreateFile")
 	}
 	if !reflect.DeepEqual(got, want) {
-		t.Errorf("Error CreateFile returns %v; want %v", got, want)
+		t.Errorf("unexpected %v; want %v", got, want)
 	}
 }
 
@@ -78,14 +78,14 @@ func TestCreateFile_ErrNotImplemented(t *testing.T) {
 	var err error
 	_, err = CreateFile(fsys, name, fs.ModePerm)
 	if err == nil {
-		t.Errorf("Error CreateFile returns no error")
+		t.Fatal("no error")
 	}
 	gotErr, ok := err.(*fs.PathError)
 	if !ok {
-		t.Errorf("Error CreateFile returns unknown error %v", err)
+		t.Errorf("unexpected %v", err)
 	}
-	if !reflect.DeepEqual(gotErr, wantErr) {
-		t.Errorf("Error CreateFile returns unknown error %v; want %v", gotErr, wantErr)
+	if gotErr.Error() != wantErr.Error() {
+		t.Errorf("unexpected %v; want %v", gotErr, wantErr)
 	}
 }
 
@@ -104,10 +104,10 @@ func TestWriteFile(t *testing.T) {
 		t.Fatal(err)
 	}
 	if !called {
-		t.Error("Error WriteFile is not called")
+		t.Error("not called WriteFile")
 	}
 	if got != want {
-		t.Errorf("Error WriteFile returns %d; want %d", got, want)
+		t.Errorf("unexpected %d; want %d", got, want)
 	}
 }
 
@@ -120,14 +120,14 @@ func TestWriteFile_ErrNotImplemented(t *testing.T) {
 	var err error
 	_, err = WriteFile(fsys, name, []byte{}, fs.ModePerm)
 	if err == nil {
-		t.Errorf("Error WriteFile returns no error")
+		t.Fatal("no error")
 	}
 	gotErr, ok := err.(*fs.PathError)
 	if !ok {
-		t.Errorf("Error WriteFile returns unknown error %v", err)
+		t.Errorf("unexpected %v", err)
 	}
-	if !reflect.DeepEqual(gotErr, wantErr) {
-		t.Errorf("Error WriteFile returns unknown error %v; want %v", gotErr, wantErr)
+	if gotErr.Error() != wantErr.Error() {
+		t.Errorf("unexpected %v; want %v", gotErr, wantErr)
 	}
 }
 
@@ -145,7 +145,7 @@ func TestRemoveFile(t *testing.T) {
 		t.Fatal(err)
 	}
 	if !called {
-		t.Error("Error RemoveFile is not called")
+		t.Error("not called RemoveFile")
 	}
 }
 
@@ -163,7 +163,7 @@ func TestRemoveAll(t *testing.T) {
 		t.Fatal(err)
 	}
 	if !called {
-		t.Error("Error RemoveAll is not called")
+		t.Error("not called RemoveAll")
 	}
 }
 
@@ -175,14 +175,14 @@ func TestRemoveFile_ErrNotImplemented(t *testing.T) {
 
 	err := RemoveFile(fsys, name)
 	if err == nil {
-		t.Errorf("Error RemoveFile returns no error")
+		t.Fatal("no error")
 	}
 	gotErr, ok := err.(*fs.PathError)
 	if !ok {
-		t.Errorf("Error RemoveFile returns unknown error %v", err)
+		t.Errorf("unexpected %v", err)
 	}
-	if !reflect.DeepEqual(gotErr, wantErr) {
-		t.Errorf("Error RemoveFile returns unknown error %v; want %v", gotErr, wantErr)
+	if gotErr.Error() != wantErr.Error() {
+		t.Errorf("unexpected %v; want %v", gotErr, wantErr)
 	}
 }
 
@@ -194,14 +194,14 @@ func TestRemoveAll_ErrNotImplemented(t *testing.T) {
 
 	err := RemoveAll(fsys, path)
 	if err == nil {
-		t.Errorf("Error RemoveAll returns no error")
+		t.Fatal("no error")
 	}
 	gotErr, ok := err.(*fs.PathError)
 	if !ok {
-		t.Errorf("Error RemoveAll returns unknown error %v", err)
+		t.Errorf("unexpected %v", err)
 	}
-	if !reflect.DeepEqual(gotErr, wantErr) {
-		t.Errorf("Error RemoveAll returns unknown error %v; want %v", gotErr, wantErr)
+	if gotErr.Error() != wantErr.Error() {
+		t.Errorf("unexpected %v; want %v", gotErr, wantErr)
 	}
 }
 
@@ -246,7 +246,7 @@ func TestCopyFS(t *testing.T) {
 		t.Fatal(err)
 	}
 	if !reflect.DeepEqual(got, want) {
-		t.Errorf("Error CopyFS %v; want %v", got, want)
+		t.Errorf("unexpected %v; want %v", got, want)
 	}
 }
 
@@ -259,8 +259,8 @@ func TestCopyFS_StatError(t *testing.T) {
 	}
 
 	gotErr := CopyFS(&FSDelegator{}, src, ".")
-	if !reflect.DeepEqual(gotErr, wantErr) {
-		t.Errorf("Error CopyFS returns unknown error %+v; want %v", gotErr, wantErr)
+	if gotErr.Error() != wantErr.Error() {
+		t.Errorf("unexpected %v; want %v", gotErr, wantErr)
 	}
 }
 
@@ -273,8 +273,8 @@ func TestCopyFS_OpenError(t *testing.T) {
 	}
 
 	gotErr := CopyFS(&FSDelegator{}, src, ".")
-	if !reflect.DeepEqual(gotErr, wantErr) {
-		t.Errorf("Error CopyFS returns unknown error %+v; want %v", gotErr, wantErr)
+	if gotErr.Error() != wantErr.Error() {
+		t.Errorf("unexpected %+v; want %v", gotErr, wantErr)
 	}
 }
 
@@ -289,7 +289,41 @@ func TestCopyFS_CreateFileError(t *testing.T) {
 	}
 
 	gotErr := CopyFS(dest, src, ".")
-	if !reflect.DeepEqual(gotErr, wantErr) {
-		t.Errorf("Error CopyFS returns unknown error %+v; want %v", gotErr, wantErr)
+	if gotErr.Error() != wantErr.Error() {
+		t.Errorf("unexpected %+v; want %v", gotErr, wantErr)
+	}
+}
+
+func TestGlob(t *testing.T) {
+	fsys := os.DirFS(".")
+	_, err := Glob(fsys, "*.md")
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestReadFile(t *testing.T) {
+	fsys := os.DirFS(".")
+	_, err := ReadFile(fsys, "README.md")
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestValidPath(t *testing.T) {
+	want := true
+	got := ValidPath(".")
+	if got != want {
+		t.Errorf("unexpected %v; want %v", got, want)
+	}
+}
+
+func TestWalkDir(t *testing.T) {
+	fsys := os.DirFS(".")
+	err := WalkDir(fsys, ".", func(path string, d fs.DirEntry, err error) error {
+		return nil
+	})
+	if err != nil {
+		t.Fatal(err)
 	}
 }

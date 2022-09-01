@@ -17,7 +17,7 @@ import (
 func TestFS(t *testing.T) {
 	fsys := New("testdata")
 	if err := fstest.TestFS(fsys, "dir0", "dir0/file01.txt"); err != nil {
-		t.Errorf("Error testing/fstest: %+v", err)
+		t.Fatal(err)
 	}
 }
 
@@ -30,7 +30,7 @@ func TestWriteFileFS(t *testing.T) {
 
 	fsys := New(filepath.Dir(tmpDir))
 	if err := wfstest.TestWriteFileFS(fsys, filepath.Base(tmpDir)); err != nil {
-		t.Errorf(`Error wfs/wfstest: %+v`, err)
+		t.Fatal(err)
 	}
 }
 
@@ -87,8 +87,8 @@ func TestCreateFile_MkdirAllError(t *testing.T) {
 	var gotErr error
 	_, gotErr = wfs.CreateFile(fsys, "name.txt", fs.ModePerm)
 
-	if !reflect.DeepEqual(gotErr, wantErr) {
-		t.Errorf("Error CreateFile returns unknown error %v; want %v", gotErr, wantErr)
+	if gotErr.Error() != wantErr.Error() {
+		t.Errorf("unexpected %v; want %v", gotErr, wantErr)
 	}
 }
 
@@ -100,7 +100,7 @@ func TestWriteFile(t *testing.T) {
 	defer os.RemoveAll(tmpDir)
 
 	name := "test.txt"
-	want := []byte(`test`)
+	want := []byte("test")
 
 	fsys := DirFS(tmpDir)
 	n, err := wfs.WriteFile(fsys, name, want, fs.ModePerm)
@@ -108,7 +108,7 @@ func TestWriteFile(t *testing.T) {
 		t.Fatal(err)
 	}
 	if n != len(want) {
-		t.Errorf("Error len %d; want %d", n, len(want))
+		t.Errorf("unexpected %d; want %d", n, len(want))
 	}
 
 	got, err := ioutil.ReadFile(tmpDir + "/" + name)
@@ -116,7 +116,7 @@ func TestWriteFile(t *testing.T) {
 		t.Fatal(err)
 	}
 	if !reflect.DeepEqual(got, want) {
-		t.Errorf("Error content %s; want %s", got, want)
+		t.Errorf("unexpected %s; want %s", got, want)
 	}
 }
 
@@ -130,7 +130,7 @@ func TestWriteFile_InvalidError(t *testing.T) {
 	fsys := DirFS(tmpDir)
 	_, err = wfs.WriteFile(fsys, "../invalid.txt", []byte{}, fs.ModePerm)
 	if err == nil {
-		t.Fatal("Error WriteFile returns no error")
+		t.Fatal("no error")
 	}
 }
 
@@ -140,16 +140,16 @@ func TestContainsDenyWin(t *testing.T) {
 		want bool
 	}{
 		{
-			name: `allow.txt`,
+			name: "allow.txt",
 			want: false,
 		}, {
-			name: `path/to/allow.txt`,
+			name: "path/to/allow.txt",
 			want: false,
 		}, {
-			name: `deny:txt`,
+			name: "deny:txt",
 			want: true,
 		}, {
-			name: `C:/deny.txt`,
+			name: "C:/deny.txt",
 			want: true,
 		}, {
 			name: `path\to\deny.txt`,
@@ -159,7 +159,7 @@ func TestContainsDenyWin(t *testing.T) {
 	for i, testCase := range testCases {
 		got := containsDenyWin(testCase.name)
 		if got != testCase.want {
-			t.Errorf("Error[%d] containsDenyWin(%s) %v; want %v",
+			t.Errorf("tests[%d] %s unexpected %v; want %v",
 				i, testCase.name, got, testCase.want)
 		}
 	}
@@ -174,7 +174,7 @@ func TestSub_WriteFile(t *testing.T) {
 
 	dir := "sub"
 	name := "test.txt"
-	want := []byte(`test`)
+	want := []byte("test")
 
 	fsys, err := fs.Sub(DirFS(tmpDir), dir)
 	if err != nil {
@@ -185,7 +185,7 @@ func TestSub_WriteFile(t *testing.T) {
 		t.Fatal(err)
 	}
 	if n != len(want) {
-		t.Errorf("Error len %d; want %d", n, len(want))
+		t.Errorf("unexpected %d; want %d", n, len(want))
 	}
 
 	got, err := ioutil.ReadFile(tmpDir + "/" + dir + "/" + name)
@@ -193,7 +193,7 @@ func TestSub_WriteFile(t *testing.T) {
 		t.Fatal(err)
 	}
 	if !reflect.DeepEqual(got, want) {
-		t.Errorf("Error content %s; want %s", got, want)
+		t.Errorf("unexpected %s; want %s", got, want)
 	}
 }
 
@@ -227,7 +227,7 @@ func TestRemoveFile_InvalidError(t *testing.T) {
 	fsys := DirFS(tmpDir)
 	err = wfs.RemoveFile(fsys, "../invalid-dir")
 	if err == nil {
-		t.Fatal("Error RemoveFile returns no error")
+		t.Fatal("no error")
 	}
 }
 
@@ -265,6 +265,6 @@ func TestRemoveAll_InvalidError(t *testing.T) {
 	fsys := DirFS(tmpDir)
 	err = wfs.RemoveAll(fsys, "../invalid-dir")
 	if err == nil {
-		t.Fatal("Error RemoveAll returns no error")
+		t.Fatal("no error")
 	}
 }

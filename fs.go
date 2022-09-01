@@ -103,3 +103,23 @@ func CopyFS(dest, src fs.FS, root string) error {
 		return err
 	})
 }
+
+// Glob calls fs.Glob.
+func Glob(fsys fs.FS, pattern string) (matches []string, err error) {
+	return fs.Glob(fsys, pattern)
+}
+
+// ReadFile calls fs.ReadFile.
+func ReadFile(fsys fs.FS, name string) ([]byte, error) {
+	return fs.ReadFile(fsys, name)
+}
+
+// ValidPath calls fs.ValidPath.
+func ValidPath(name string) bool {
+	return fs.ValidPath(name)
+}
+
+// WalkDir calls fs.WalkDir.
+func WalkDir(fsys fs.FS, root string, fn fs.WalkDirFunc) error {
+	return fs.WalkDir(fsys, root, fn)
+}
