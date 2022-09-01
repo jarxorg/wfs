@@ -293,3 +293,37 @@ func TestCopyFS_CreateFileError(t *testing.T) {
 		t.Errorf("Error CopyFS returns unknown error %+v; want %v", gotErr, wantErr)
 	}
 }
+
+func TestGlob(t *testing.T) {
+	fsys := os.DirFS(".")
+	_, err := Glob(fsys, "*.md")
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestReadFile(t *testing.T) {
+	fsys := os.DirFS(".")
+	_, err := ReadFile(fsys, "README.md")
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestValidPath(t *testing.T) {
+	want := true
+	got := ValidPath(".")
+	if got != want {
+		t.Errorf("unexpected %v; want %v", got, want)
+	}
+}
+
+func TestWalkDir(t *testing.T) {
+	fsys := os.DirFS(".")
+	err := WalkDir(fsys, ".", func(path string, d fs.DirEntry, err error) error {
+		return nil
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+}
